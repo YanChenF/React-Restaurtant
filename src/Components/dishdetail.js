@@ -14,7 +14,7 @@ class DishDetail extends Component {
         if(comments.length <= 0) return <div></div>;
         return comments.map((comment) => {
             const date = new Date(comment.date);
-            return <li>
+            return <li key={comment.id}>
                 <p>{comment.comment}</p>
                 <p>--{comment.author}, {date.toLocaleDateString()}</p>
             </li>
