@@ -2,15 +2,7 @@ import React, { Component } from 'react';
 import { Card, CardImg, CardText, CardBody,
     CardTitle } from 'reactstrap';
 
-class DishDetail extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            dish: null
-        };
-    }
-
-    renderComments(comments) {
+function renderComments(comments) {
         if(comments.length <= 0) return <div></div>;
         return comments.map((comment) => {
             const date = new Date(comment.date);
@@ -18,12 +10,10 @@ class DishDetail extends Component {
                 <p>{comment.comment}</p>
                 <p>--{comment.author}, {date.toLocaleDateString()}</p>
             </li>
-        })
-
-        ;
+        });
     }
 
-    renderDish(dish) {
+function renderDish(dish) {
         return (
             <Card>
                 <CardImg top width='100%' src={dish.image} alt={dish.name} />
@@ -35,26 +25,23 @@ class DishDetail extends Component {
         );
     }
 
-    render() { 
-        const dish  = this.props.dish;     
+const DishDetail = (props) => {
+    const dish  = props.dish;     
         if(!dish) {
             return <div></div>;
         }
         const comments = dish.comments;
         return(<div className='row'>
             <div className='col-12 col-md-5 m-1'>
-                {this.renderDish(dish)}
+                {renderDish(dish)}
             </div>
             <div className='col-12 col-md-5 m-1'>
                 <h4>Comments</h4>
                 <ul className='list-unstyled'>
-                    {this.renderComments(comments)}
+                    {renderComments(comments)}
                 </ul>
             </div>
-        </div>
-            
-        );
-    }
+        </div>);
 }
 
 export default DishDetail;
