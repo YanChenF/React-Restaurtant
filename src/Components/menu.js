@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { Card, CardImg, CardImgOverlay, CardText, CardBody,
+import React from 'react';
+import { Card, CardImg, CardImgOverlay,
     CardTitle } from 'reactstrap';
 
-function Menu (props) {
-    const menu = props.dishes.map((dish) => {
+function Menu ({dishes, onClick}) {
+    const menu = dishes.map((dish) => {
         return (<div className='col-12 col-md-5 m-1' key={dish.id}>
-            <Card onClick={() => props.onClick(dish)}>
+            <Card onClick={() => onClick(dish)}>
                 <CardImg top width='100%' src={dish.image} alt={dish.name}/>
                 <CardImgOverlay>
                     <CardTitle>{dish.name}</CardTitle>
