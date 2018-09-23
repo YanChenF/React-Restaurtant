@@ -8,6 +8,7 @@ import { DISHES } from '../shared/dishes';
 import { COMMENTS } from '../shared/comments';
 import { PROMOTIONS } from '../shared/promotions';
 import { LEADERS } from '../shared/leaders';
+import About from './about';
 
 import Home from './home';
 import Contact from './contactus';
@@ -54,6 +55,7 @@ export default class Main extends Component {
                 onClick={this.onDishselect} />}/>
                 <Route path='/contact' component={Contact} />
                 <Route path='/menu/:id' component={DishById} />
+                <Route path='/about' component={() => <About leaders={this.state.leaders} />} />
                 <Redirect to="/home" />
             </Switch>
             <Footer />
