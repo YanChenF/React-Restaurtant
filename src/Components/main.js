@@ -38,6 +38,14 @@ export default class Main extends Component {
                 />
             );
         }
+
+        const DishById = ({match}) => {
+            return (
+                <DishDetail dish={this.state.dishes.filter((dish) => dish.id === parseInt(match.params.id, 10))[0]}
+                comments={this.state.comments.filter((comment) => comment.dishId === parseInt(match.params.id, 10))}/>
+            );
+        }
+
         return (<div>
             <Header />
             <Switch>
@@ -45,9 +53,9 @@ export default class Main extends Component {
                 <Route exact path="/menu" component={() => <Menu dishes={this.state.dishes}
                 onClick={this.onDishselect} />}/>
                 <Route path='/contact' component={Contact} />
+                <Route path='/menu/:id' component={DishById} />
                 <Redirect to="/home" />
             </Switch>
-            <DishDetail dish={this.state.selectedDish}/>
             <Footer />
         </div>);
         
