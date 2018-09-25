@@ -1,17 +1,33 @@
 import React, { Component } from 'react';
-import { Nav, Navbar , NavbarBrand, NavbarToggler, NavItem, Collapse, Jumbotron } from 'reactstrap';
+import { Nav, Navbar , NavbarBrand, NavbarToggler, NavItem, Collapse, Jumbotron,
+        Button, Modal, ModalHeader, ModalBody,
+        Form, FormGroup, Label, Input } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 export default class Header extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isOpen: false
+            isOpen: false,
+            modal: false
         };
-        this.toggle = this.toggle.bind(this);
+        this.toggleNav = this.toggleNav.bind(this);
+        this.toggleModal = this.toggleModal.bind(this);
+        this.handleLogin = this.handleLogin.bind(this);
     }
 
-    toggle() {
+    toggleNav() {
         this.setState({isOpen: !this.state.isOpen});
+    }
+
+    toggleModal() {
+        this.setState({modal: !this.state.modal})
+    }
+
+    handleLogin(event) {
+        this.toggleModal();
+        const output = `Username: ${this.username.value} Password: ${this.password.value} Remember: ${this.remember.checked}`;
+        alert(output);
+        event.preventDefault();
     }
 
     render() {
@@ -19,7 +35,7 @@ export default class Header extends Component {
             <React.Fragment>
                 <Navbar dark color="primary" expand="md">
                     <div className="container">
-                        <NavbarToggler onClick={this.toggle}/>
+                        <NavbarToggler onClick={this.toggleNav}/>
                         <NavbarBrand className="mr-auto" href="/"><img src='assets/images/logo.png' height="30" width="41" alt='Ristorante Con Fusion' /></NavbarBrand>
                         <Collapse isOpen={this.state.isOpen} navbar>
                             <Nav navbar>
@@ -40,6 +56,11 @@ export default class Header extends Component {
                                     </NavLink>
                                 </NavItem>
                             </Nav>
+                            <Nav navbar className='ml-auto'>
+                                <NavItem>
+                                    <Button outline onClick={this.toggleModal} className="nav-link"><span className='fa fa-sign-in fa-lg'></span>Log in!</Button>
+                                </NavItem>
+                            </Nav>
                         
                         </Collapse>
                         
@@ -58,6 +79,30 @@ export default class Header extends Component {
                         </div>
                     </div>
                 </Jumbotron>
+                <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
+                    <ModalHeader toggle={this.toggleModal}>Login</ModalHeader>
+                    <ModalBody>
+                        <Form onSubmit={this.handleLogin}>
+                            <FormGroup>
+                                <Label htmlFor='username' md={2}>Username</Label>
+                                <Input type='text' id='username' name='username'
+                                innerRef={(input) => this.username = input} />
+                            </FormGroup>
+                            <FormGroup>
+                                <Label htmlFor='password' md={2}>Password</Label>
+                                <Input type='password' id='password' name='password'
+                                innerRef={(input) => this.password = input} />
+                            </FormGroup>
+                            <FormGroup check>
+                                <Label check>
+                                    <Input type='checkbox' id='remember' name='remember'
+                                    innerRef={(input) => this.remember = input} />Remember?
+                                </Label> 
+                            </FormGroup>
+                            <Button type="submit" value="submit" color="primary">Login</Button>
+                        </Form>
+                    </ModalBody>
+                </Modal>
             </React.Fragment>
             
         );
