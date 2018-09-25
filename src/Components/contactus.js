@@ -13,10 +13,15 @@ class Contact extends Component {
             email : '',
             agree : false,
             contactType : 'Phone',
-            message : ''
+            message : '',
+            touched: {
+                firstname: false,
+                lastname: false
+            }
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleBlur = this.handleBlur.bind(this);
     }
 
     handleInputChange(event) {
@@ -35,7 +40,25 @@ class Contact extends Component {
         event.preventDefault();
     }
 
+    handleBlur = (field) => (event) => {
+        this.setState({
+            touched: {
+                ...this.state.touched, [field]: true
+            }
+        });
+    }
+
+    validate(firstname) {
+        const errors = {
+            firstname: '',
+            lastname: ''
+        };
+        if(this.state.touched.firstname && firstname.length < 3) errors.firstname = 'First name must be longer than 3 characters';
+        return errors;
+    }
+
     render() {
+        const errors = this.validate(this.state.firstname);
         return(
             <div className="container">
                 <div className='row'>
@@ -86,7 +109,11 @@ class Contact extends Component {
                                 value={this.state.firstname}
                                 name='firstname' 
                                 id='firstname'
-                                onChange={this.handleInputChange} />
+                                onChange={this.handleInputChange}
+                                onBlur={this.handleBlur('firstname')}
+                                valid={this.state.touched.firstname && errors.firstname === ''}
+                                invalid={errors.firstname !== ''} />
+                                <FormFeedback>{errors.firstname}</FormFeedback>
                                 </Col>
                             </FormGroup>
                             <FormGroup row>
