@@ -26,9 +26,7 @@ class CommentForm extends Component {
 
     handleSubmit(values) {
         this.toggleModal();
-        const output = JSON.stringify(values);
-        console.log(output);
-        alert(output);
+        this.props.addComment(this.props.dishId, values.author, values.comment, values.rating)
 
     }
 
@@ -54,15 +52,15 @@ class CommentForm extends Component {
                                 </Col>
                             </Row>
                             <Row className='form-group'>
-                                <Label htmlFor='yourname' md={3}>Your name</Label>
+                                <Label htmlFor='author' md={3}>Your name</Label>
                                 <Col md={9}>
                                     <Control.text 
-                                    model='.yourname' name='yourname' id='yourname' className='form-control'
+                                    model='.author' name='author' id='author' className='form-control'
                                     validators={{
                                         minLenth: minLenth(3), maxLenth: maxLenth(15)
                                     }} />
                                     <Errors className='text-danger'
-                                    show='touched' model='.yourname'
+                                    show='touched' model='.author'
                                     messages={{
                                         minLenth: 'Name must be longer than 3 charaters',
                                         maxLenth: 'Name must be less than 15 characters'
@@ -87,18 +85,28 @@ class CommentForm extends Component {
     }
 }
 
-function renderComments(comments) {
+function RenderComments({comments, addComment, dishId}) {
+    const dishComments = comments.map((comment) => {
+        const date = new Date(comment.date);
+        return <li key={comment.id}>
+            <p>{comment.comment}</p>
+            <p>--{comment.author}, {date.toLocaleDateString()}</p>
+        </li>
+    });
+    
         if(comments.length <= 0) return <div></div>;
-        return comments.map((comment) => {
-            const date = new Date(comment.date);
-            return <li key={comment.id}>
-                <p>{comment.comment}</p>
-                <p>--{comment.author}, {date.toLocaleDateString()}</p>
-            </li>
-        });
+        return (
+            <div className='col-12 col-md-5 m-1'>
+                    <h4>Comments</h4>
+                    <ul className='list-unstyled'>
+                        {dishComments}
+                    </ul>
+                    <CommentForm addComment={addComment} dishId={dishId}/>
+            </div>
+        )
     }
 
-function renderDish(dish) {
+function RenderDish({dish}) {
         return (
             <Card>
                 <CardImg top width='100%' src={dish.image} alt={dish.name} />
@@ -110,7 +118,7 @@ function renderDish(dish) {
         );
     }
 
-const DishDetail = ({dish, comments}) => {
+const DishDetail = ({dish, comments, addComment}) => {
     // const dish  = props.dish;     
     //     if(!dish) {
     //         return <div></div>;
@@ -132,15 +140,9 @@ const DishDetail = ({dish, comments}) => {
             </div>
             <div className='row'>
                 <div className='col-12 col-md-5 m-1'>
-                    {renderDish(dish)}
+                    <RenderDish dish={dish}/>
                 </div>
-                <div className='col-12 col-md-5 m-1'>
-                    <h4>Comments</h4>
-                    <ul className='list-unstyled'>
-                        {renderComments(comments)}
-                    </ul>
-                    <CommentForm />
-                </div>
+                <RenderComments comments={comments} addComment={addComment} dishId={dish.id}/>
             </div>
         </div>
         );
