@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
-import { Breadcrumb, BreadcrumbItem, Form, FormFeedback, FormGroup, Input, Label, 
-    Button, Col } from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Label, 
+    Button, Col, Row } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import { Form, Control, actions, Errors} from 'react-redux-form';
+
+const minLenth = (len) => (val) => (val) && (val.length >= len);
+const maxLenth = (len) => (val) => !(val) || (val.length <= len);
+const required = (val) => (!!val);
 
 class Contact extends Component {
     constructor(props) {
@@ -19,25 +24,14 @@ class Contact extends Component {
                 lastname: false
             }
         };
-        this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleBlur = this.handleBlur.bind(this);
     }
 
-    handleInputChange(event) {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-        this.setState({
-            [name]: value
-        })
-    }
-
-    handleSubmit(event) {
-        const output = JSON.stringify(this.state);
-        console.log(output);
-        alert(output);
-        event.preventDefault();
+    handleSubmit(values) {
+        console.log(values);
+        alert(values);
+        this.props.resetFeedbackForm();
+        //event.preventDefault();
     }
 
     handleBlur = (field) => (event) => {
@@ -48,17 +42,7 @@ class Contact extends Component {
         });
     }
 
-    validate(firstname) {
-        const errors = {
-            firstname: '',
-            lastname: ''
-        };
-        if(this.state.touched.firstname && firstname.length < 3) errors.firstname = 'First name must be longer than 3 characters';
-        return errors;
-    }
-
     render() {
-        const errors = this.validate(this.state.firstname);
         return(
             <div className="container">
                 <div className='row'>
@@ -102,81 +86,84 @@ class Contact extends Component {
                         <h4>Send us your feedback!</h4>
                     </div>
                     <div className='col-12 col-md-9'>
-                        <Form onSubmit={this.handleSubmit}>
-                            <FormGroup row>
+
+
+                        <Form model='feedback' onSubmit={(values) => this.handleSubmit(values)}>
+                            <Row className='form-group'>
                                 <Label htmlFor='firstname' md={2}>First name:</Label>
-                                <Col md={10}><Input type='text' placeholder='firstname' 
-                                value={this.state.firstname}
+                                <Col md={10}>
+                                <Control.text model='.firstname' placeholder='firstname' className='form-control'
                                 name='firstname' 
                                 id='firstname'
-                                onChange={this.handleInputChange}
-                                onBlur={this.handleBlur('firstname')}
-                                valid={this.state.touched.firstname && errors.firstname === ''}
-                                invalid={errors.firstname !== ''} />
-                                <FormFeedback>{errors.firstname}</FormFeedback>
+                                validators={{
+                                    required, minLenth: minLenth(3), maxLenth: maxLenth(15)
+                                }}
+                                 />
+                                 <Errors model='.firstname' show='touched' className='text-danger'
+                                 messages={{
+                                     required: 'Required ',
+                                     minLenth: 'Must longer than 3 characters',
+                                     maxLenth: 'Must shorter than 15 characters'
+                                 }}
+                                 />
                                 </Col>
-                            </FormGroup>
-                            <FormGroup row>
+                            </Row>
+                            <Row className='form-group'>
                                 <Label htmlFor='lastname' md={2}>Last name:</Label>
-                                <Col md={10}><Input type='text' placeholder='lastname' 
-                                value={this.state.lastname}
+                                <Col md={10}>
+                                <Control.text model='.lastname' placeholder='lastname' className='form-control'
                                 name='lastname' 
-                                id='lastname'
-                                onChange={this.handleInputChange} />
+                                id='lastname' />
                                 </Col>
-                            </FormGroup>
-                            <FormGroup row>
+                            </Row>
+                            <Row className='form-group'>
                                 <Label htmlFor='phone' md={2}>Phone:</Label>
-                                <Col md={10}><Input type='tel' placeholder='phone' 
-                                value={this.state.phone}
+                                <Col md={10}>
+                                <Control.text model='.phone' placeholder='phone' className='form-control'
                                 name='phone' 
-                                id='phone'
-                                onChange={this.handleInputChange} />
+                                id='phone' />
                                 </Col>
-                            </FormGroup>
-                            <FormGroup row>
+                            </Row>
+                            <Row className='form-group'>
                                 <Label htmlFor='email' md={2}>Email:</Label>
-                                <Col md={10}><Input type='email' placeholder='email' 
-                                value={this.state.email}
+                                <Col md={10}>
+                                <Control.text model='.email' placeholder='email' className='form-control'
                                 name='email' 
-                                id='email'
-                                onChange={this.handleInputChange} />
+                                id='email' />
                                 </Col>
-                            </FormGroup>
-                            <FormGroup row>
+                            </Row>
+                            <Row className='form-group'>
+
                                 <Col md={{size: 6, offset: 2}}>
-                                <FormGroup check><Label check> 
-                                <Input type='checkbox'  
-                                checked={this.state.agree}
-                                name='agree' 
-                                onChange={this.handleInputChange} />May we contact you? </Label>
-                                </FormGroup>
+                                <div className='form-check'>
+                                <Label check> 
+                                <Control.checkbox model='.checkbox' className='form-check-input'
+                                name='agree' /> May we contact you? </Label>
+                                </div>
                                 </Col>
                                 <Col md={{size: 3, offset: 1}}>
-                                <Input type='select'  
-                                value={this.state.contactType}
-                                name='contactType' 
-                                onChange={this.handleInputChange} >
+                                <Control.select model='.select' className='form-control'
+                                name='contactType'  >
                                 <option>Phone</option>
                                 <option>Email</option>
-                                </Input>
+                                </Control.select>
                                 </Col>                               
-                            </FormGroup>
-                            <FormGroup row>
+                            </Row>
+                            <Row className='form-group'>
                                 <Label htmlFor='message' md={2}>Message:</Label>
-                                <Col md={10}><Input type='textarea'
-                                value={this.state.message}
+                                <Col md={10}>
+                                <Control.textarea model='.message' className='form-control'
                                 rows='12'
                                 name='message' 
-                                id='message'
-                                onChange={this.handleInputChange} />
+                                id='message' />
                                 </Col>
-                            </FormGroup>
-                            <FormGroup row>
+                            </Row>
+                            <Row className='form-group'>
                                 <Col md={{size: 10, offset: 2}} >
-                                    <Button type='submit'>Submit</Button>
+
+                                    <Button type='submit' color='primary'>Submit</Button>
                                 </Col>
-                            </FormGroup>
+                            </Row>
                         </Form>
                     </div>
 
