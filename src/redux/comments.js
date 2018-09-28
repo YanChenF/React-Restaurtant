@@ -3,7 +3,7 @@ import * as ActionTypes from './ActionTypes';
 
 export function Comments(state = COMMENTS, action) {
     switch(action.type) {
-        case ActionTypes.ADD_COMMENTS:
+        case ActionTypes.ADD_COMMENT:
             var newComment = action.payload;
             newComment.id = state.length;
             newComment.date = new Date().toISOString();

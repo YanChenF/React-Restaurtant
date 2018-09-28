@@ -4,6 +4,7 @@ import { Card, CardImg, CardText, CardBody,
 import { Link } from 'react-router-dom';
 import { LocalForm, Control, Errors } from 'react-redux-form';
 import { Loading } from './loading';
+import { baseUrl } from '../shared/baseUrl';
 //import CommentForm from './commentForm';
 
 const minLenth = (len) => (val) => (val) && (val.length >= len);
@@ -110,7 +111,7 @@ function RenderComments({comments, addComment, dishId}) {
 function RenderDish({dish}) {
         return (
             <Card>
-                <CardImg top width='100%' src={dish.image} alt={dish.name} />
+                <CardImg top width='100%' src={baseUrl + dish.image} alt={dish.name} />
                 <CardBody>
                     <CardTitle>{dish.name}</CardTitle>
                     <CardText>{dish.description}</CardText>
