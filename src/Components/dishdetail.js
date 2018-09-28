@@ -87,7 +87,8 @@ class CommentForm extends Component {
     }
 }
 
-function RenderComments({comments, addComment, dishId}) {
+function RenderComments({comments, addComment, dishId, errMess}) {
+    if(errMess) return <p>{errMess}</p>
     const dishComments = comments.map((comment) => {
         const date = new Date(comment.date);
         return <li key={comment.id}>
@@ -97,6 +98,7 @@ function RenderComments({comments, addComment, dishId}) {
     });
     
         if(comments.length <= 0) return <div></div>;
+     
         return (
             <div className='col-12 col-md-5 m-1'>
                     <h4>Comments</h4>
@@ -109,6 +111,7 @@ function RenderComments({comments, addComment, dishId}) {
     }
 
 function RenderDish({dish}) {
+        
         return (
             <Card>
                 <CardImg top width='100%' src={baseUrl + dish.image} alt={dish.name} />
@@ -120,17 +123,17 @@ function RenderDish({dish}) {
         );
     }
 
-const DishDetail = ({dish, comments, addComment, isLoading, errMess}) => {
-        if(isLoading) {
-            return (
-            <div className='container'>
-                <div className='row'>
-                    <Loading /> 
-                </div>
-            </div>);
-        } else if(errMess) {
-            return <p>{errMess}</p>
-        } else if(dish !== null)
+const DishDetail = ({dish, comments, addComment, isLoading, errMess, commentsErrMess}) => {
+    if(isLoading) {
+        return (
+        <div className='container'>
+            <div className='row'>
+                <Loading /> 
+            </div>
+        </div>);
+    } else if(errMess) {
+        return <p>{errMess}</p>
+    } else if(dish !== null)
         return(
         <div className='container'>
             <div className='row'>
@@ -146,9 +149,9 @@ const DishDetail = ({dish, comments, addComment, isLoading, errMess}) => {
             </div>
             <div className='row'>
                 <div className='col-12 col-md-5 m-1'>
-                    <RenderDish dish={dish}/>
+                    <RenderDish dish={dish} />
                 </div>
-                <RenderComments comments={comments} addComment={addComment} dishId={dish.id}/>
+                <RenderComments comments={comments} addComment={addComment} dishId={dish.id} errMess={commentsErrMess}/>
             </div>
         </div>
         );
