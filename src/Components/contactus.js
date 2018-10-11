@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Breadcrumb, BreadcrumbItem, Label, 
     Button, Col, Row } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { Form, Control, actions, Errors} from 'react-redux-form';
+import { Form, Control, Errors} from 'react-redux-form';
 
 const minLenth = (len) => (val) => (val) && (val.length >= len);
 const maxLenth = (len) => (val) => !(val) || (val.length <= len);
@@ -28,8 +28,10 @@ class Contact extends Component {
     }
 
     handleSubmit(values) {
-        console.log(values);
-        alert(values);
+        //alert(JSON.stringify(values));
+        console.log(JSON.stringify(values));
+        console.log(JSON.parse(JSON.stringify(values)));
+        this.props.addFeedback(values);
         this.props.resetFeedbackForm();
         //event.preventDefault();
     }
@@ -117,11 +119,11 @@ class Contact extends Component {
                                 </Col>
                             </Row>
                             <Row className='form-group'>
-                                <Label htmlFor='phone' md={2}>Phone:</Label>
+                                <Label htmlFor='telnum' md={2}>Phone:</Label>
                                 <Col md={10}>
-                                <Control.text model='.phone' placeholder='phone' className='form-control'
-                                name='phone' 
-                                id='phone' />
+                                <Control.text model='.telnum' placeholder='phone' className='form-control'
+                                name='telnum' 
+                                id='telnum' />
                                 </Col>
                             </Row>
                             <Row className='form-group'>
@@ -144,7 +146,7 @@ class Contact extends Component {
                                 <Col md={{size: 3, offset: 1}}>
                                 <Control.select model='.select' className='form-control'
                                 name='contactType'  >
-                                <option>Phone</option>
+                                <option>Tel.</option>
                                 <option>Email</option>
                                 </Control.select>
                                 </Col>                               

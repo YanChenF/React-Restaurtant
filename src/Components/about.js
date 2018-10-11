@@ -3,6 +3,7 @@ import { Breadcrumb, BreadcrumbItem, Card, CardBody, CardHeader, Media } from 'r
 import { Link } from 'react-router-dom';
 import { baseUrl } from '../shared/baseUrl';
 import { Loading } from './loading';
+import { Fade, Stagger } from 'react-animation-components';
 
 function RenderLeader({leader, errMess}) {
     //dont need to do this
@@ -20,7 +21,8 @@ function RenderLeader({leader, errMess}) {
         return  <p>{errMess}</p>
         } else if(leader !== null)
     return (
-        <div key={leader.id} className='col-12 m-2'>
+        <div className='col-12 m-2'>
+            
             <Media tag='li' >
                 <Media left middle className='mr-2'>
                     <Media object src={baseUrl + leader.image} alt={leader.name} />
@@ -32,6 +34,7 @@ function RenderLeader({leader, errMess}) {
                 </Media>
             </Media>
         </div>
+        
     );
 }
 
@@ -51,8 +54,9 @@ function About(props) {
     } else  
         leaders = props.leaders.leaders.map((leader) => { 
         //console.log(props.leaders);
-        return <div key={leader.id}><RenderLeader leader={leader} 
-        errMess={props.leaders.errMess} /></div>
+        return (<Fade in key={leader.id}>
+        <RenderLeader leader={leader} 
+        errMess={props.leaders.errMess} /></Fade>)
     });
 
     return(
@@ -111,7 +115,9 @@ function About(props) {
                 </div>
                 <div className="col-12">
                     <Media list>
-                        {leaders}
+                        <Stagger in>
+                            {leaders}
+                        </Stagger>
                     </Media>
                 </div>
             </div>

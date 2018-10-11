@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import { LocalForm, Control, Errors } from 'react-redux-form';
 import { Loading } from './loading';
 import { baseUrl } from '../shared/baseUrl';
+import { FadeTransform, Fade, Stagger } from 'react-animation-components';
+
 //import CommentForm from './commentForm';
 
 const minLenth = (len) => (val) => (val) && (val.length >= len);
@@ -91,10 +93,13 @@ function RenderComments({comments, addComment, dishId, errMess}) {
     if(errMess) return <p>{errMess}</p>
     const dishComments = comments.map((comment) => {
         const date = new Date(comment.date);
-        return <li key={comment.id}>
+        return (
+        <Fade in key={comment.id}><li >
             <p>{comment.comment}</p>
-            <p>--{comment.author}, {date.toLocaleDateString()}</p>
+            <p>--{comment.author}, {date.toLocaleDateString()}</p>   
         </li>
+        </Fade>
+        )
     });
     
         if(comments.length <= 0) return <div></div>;
@@ -103,7 +108,9 @@ function RenderComments({comments, addComment, dishId, errMess}) {
             <div className='col-12 col-md-5 m-1'>
                     <h4>Comments</h4>
                     <ul className='list-unstyled'>
-                        {dishComments}
+                        <Stagger in>{dishComments}
+                        </Stagger>
+                        
                     </ul>
                     <CommentForm addComment={addComment} dishId={dishId}/>
             </div>
@@ -113,6 +120,11 @@ function RenderComments({comments, addComment, dishId, errMess}) {
 function RenderDish({dish}) {
         
         return (
+            <FadeTransform
+            in
+            transformProps={{
+                exitTransform: 'scale(0.5) translateY(-50%)'
+            }}>
             <Card>
                 <CardImg top width='100%' src={baseUrl + dish.image} alt={dish.name} />
                 <CardBody>
@@ -120,6 +132,7 @@ function RenderDish({dish}) {
                     <CardText>{dish.description}</CardText>
                 </CardBody>
             </Card>
+            </FadeTransform>
         );
     }
 
