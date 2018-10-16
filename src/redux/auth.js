@@ -13,6 +13,10 @@ export function Auth(state = {
             return {...state, errMess: null, isLoading: false, isAuthenticated: true};
         case ActionTypes.LOGIN_ERR:
             return {...state, err: action.errMess, isLoading: false, user: null};
+        case ActionTypes.REQUEST_LOGOUT:
+            return {...state, isLoading: true, user: null};
+        case ActionTypes.LOGOUT_SUCCESS: 
+            return {...state, isLoading: false, isAuthenticated: false};
         default: return state;
     }
 }

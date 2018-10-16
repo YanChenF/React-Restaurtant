@@ -94,7 +94,7 @@ function RenderComments({comments, addComment, dishId, errMess}) {
     const dishComments = comments.map((comment) => {
         const date = new Date(comment.updatedAt);
         return (
-        <Fade in key={comment.id}><li >
+        <Fade in key={comment._id}><li >
             <p>{comment.comment}</p>
             <p>--{comment.author.firstname} {comment.author.lastname}, {date.toLocaleDateString()}</p>   
         </li>

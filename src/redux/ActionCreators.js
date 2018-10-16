@@ -247,3 +247,18 @@ export const loginUser = (creds) => (dispatch) => {
     })
     .catch(err => dispatch(loginFailure(err.message)));
 }
+
+export const requestLogout = () => ({
+    type: ActionTypes.REQUEST_LOGOUT
+});
+
+export const receiveLogout = () => ({
+    type: ActionTypes.LOGOUT_SUCCESS
+})
+
+export const logoutUser = () => (dispatch) => {
+    dispatch(requestLogout());
+    localStorage.removeItem('token');
+    localStorage.removeItem('creds');
+    dispatch(receiveLogout());
+}

@@ -13,6 +13,7 @@ export default class Header extends Component {
         this.toggleNav = this.toggleNav.bind(this);
         this.toggleModal = this.toggleModal.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
+        this.handleLogout = this.handleLogout.bind(this);
     }
 
     toggleNav() {
@@ -31,7 +32,7 @@ export default class Header extends Component {
     }
 
     handleLogout() {
-
+        this.props.logoutUser();
     }
 
     render() {

@@ -8,7 +8,7 @@ import About from './about';
 import Home from './home';
 import Contact from './contactus';
 import { connect } from 'react-redux';
-import { postComment, postFeedback, fetchDishes, fetchComments, fetchLeaders, fetchPromos, loginUser } from '../redux/ActionCreators';
+import { postComment, postFeedback, fetchDishes, fetchComments, fetchLeaders, fetchPromos, loginUser, logoutUser } from '../redux/ActionCreators';
 import { actions } from 'react-redux-form';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
@@ -49,7 +49,7 @@ class Main extends Component {
         }
 
         return (<div>
-            <Header loginUser={this.props.loginUser} auth={this.props.auth}/>
+            <Header loginUser={this.props.loginUser} auth={this.props.auth} logoutUser={this.props.logoutUser}/>
             <TransitionGroup>
                 <CSSTransition key={this.props.location.key} classNames='page' timeout={300} >
                     <Switch location={this.props.location}>
@@ -83,7 +83,8 @@ const mapDispatchToProps = (dispatch) => {
         fetchComments: () => { dispatch(fetchComments())},
         fetchPromos: () => { dispatch(fetchPromos())},
         fetchLeaders: () => { dispatch(fetchLeaders())},
-        loginUser: (creds) => {dispatch(loginUser(creds))}
+        loginUser: (creds) => {dispatch(loginUser(creds))},
+        logoutUser: () => {dispatch(logoutUser())}
     }
 }
 
