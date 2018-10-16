@@ -102,7 +102,10 @@ function RenderComments({comments, addComment, dishId, errMess}) {
         )
     });
     
-        if(comments.length <= 0) return <div></div>;
+    if(comments.length <= 0) return (<div className='col-12 col-md-5 m-1'>
+        <h4>Comments</h4>
+        <p>No comments yet!</p>
+    </div>);
      
         return (
             <div className='col-12 col-md-5 m-1'>
