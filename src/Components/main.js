@@ -8,7 +8,7 @@ import About from './about';
 import Home from './home';
 import Contact from './contactus';
 import { connect } from 'react-redux';
-import { postComment, postFeedback, fetchDishes, fetchComments, fetchLeaders, fetchPromos } from '../redux/ActionCreators';
+import { postComment, postFeedback, fetchDishes, fetchComments, fetchLeaders, fetchPromos, loginUser } from '../redux/ActionCreators';
 import { actions } from 'react-redux-form';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
@@ -42,14 +42,14 @@ class Main extends Component {
                 <DishDetail dish={this.props.dishes.dishes.filter((dish) => dish._id === match.params.id)[0]}
                 isLoading={this.props.dishes.isLoading}
                 errMess={this.props.dishes.errMess}
-                comments={this.props.comments.comments.filter((comment) => comment.dish === match.params.id)}
+                comments={this.props.comments.comments.filter((comment) => comment.dishId === match.params.id)}
                 commentsErrMess={this.props.comments.errMess}
                 addComment={this.props.postComment}/>
             );
         }
 
         return (<div>
-            <Header />
+            <Header loginUser={this.props.loginUser} auth={this.props.auth}/>
             <TransitionGroup>
                 <CSSTransition key={this.props.location.key} classNames='page' timeout={300} >
                     <Switch location={this.props.location}>
@@ -70,19 +70,20 @@ class Main extends Component {
     };
 }
 
-function mapStateToProps({dishes, promotions, leaders, comments}) {
-    return {dishes, promotions, leaders, comments};
+function mapStateToProps({dishes, promotions, leaders, comments, auth}) {
+    return {dishes, promotions, leaders, comments, auth};
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        postComment: (dishId, rating, author, comment) => dispatch(postComment(dishId, rating, author, comment)),
+        postComment: (dishId, rating, comment) => dispatch(postComment(dishId, rating, comment)),
         postFeedback: (values) => dispatch(postFeedback(values)),
         fetchDishes: () => { dispatch(fetchDishes())},
         resetFeedbackForm: () => { dispatch(actions.reset('feedback'))},
         fetchComments: () => { dispatch(fetchComments())},
         fetchPromos: () => { dispatch(fetchPromos())},
-        fetchLeaders: () => { dispatch(fetchLeaders())}
+        fetchLeaders: () => { dispatch(fetchLeaders())},
+        loginUser: (creds) => {dispatch(loginUser(creds))}
     }
 }
 

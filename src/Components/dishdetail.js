@@ -30,7 +30,7 @@ class CommentForm extends Component {
 
     handleSubmit(values) {
         this.toggleModal();
-        this.props.addComment(this.props.dishId, values.author, values.comment, values.rating)
+        this.props.addComment(this.props.dishId, values.comment, values.rating)
 
     }
 
@@ -55,7 +55,7 @@ class CommentForm extends Component {
                                     </Control.select>
                                 </Col>
                             </Row>
-                            <Row className='form-group'>
+                            {/* <Row className='form-group'>
                                 <Label htmlFor='author' md={3}>Your name</Label>
                                 <Col md={9}>
                                     <Control.text 
@@ -70,7 +70,7 @@ class CommentForm extends Component {
                                         maxLenth: 'Name must be less than 15 characters'
                                     }}></Errors>
                                 </Col>
-                            </Row>
+                            </Row> */}
                             <Row className='form-group'>
                                 <Label htmlFor='comment' md={3}>Comment</Label>
                                 <Col md={9}>
@@ -92,11 +92,11 @@ class CommentForm extends Component {
 function RenderComments({comments, addComment, dishId, errMess}) {
     if(errMess) return <p>{errMess}</p>
     const dishComments = comments.map((comment) => {
-        const date = new Date(comment.date);
+        const date = new Date(comment.updatedAt);
         return (
         <Fade in key={comment.id}><li >
             <p>{comment.comment}</p>
-            <p>--{comment.author}, {date.toLocaleDateString()}</p>   
+            <p>--{comment.author.firstname} {comment.author.lastname}, {date.toLocaleDateString()}</p>   
         </li>
         </Fade>
         )
@@ -105,6 +105,7 @@ function RenderComments({comments, addComment, dishId, errMess}) {
     if(comments.length <= 0) return (<div className='col-12 col-md-5 m-1'>
         <h4>Comments</h4>
         <p>No comments yet!</p>
+        <CommentForm addComment={addComment} dishId={dishId}/>
     </div>);
      
         return (
@@ -167,7 +168,7 @@ const DishDetail = ({dish, comments, addComment, isLoading, errMess, commentsErr
                 <div className='col-12 col-md-5 m-1'>
                     <RenderDish dish={dish} />
                 </div>
-                <RenderComments comments={comments} addComment={addComment} dishId={dish.id} errMess={commentsErrMess}/>
+                <RenderComments comments={comments} addComment={addComment} dishId={dish._id} errMess={commentsErrMess}/>
             </div>
         </div>
         );

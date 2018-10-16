@@ -8,15 +8,17 @@ export const addComment = (comment) => {
     });
 }
 
-export const postComment = (dishId, author, comment, rating) => (dispatch => {
-    const newComment = { dishId, author, comment, rating };
+export const postComment = (dishId, comment, rating) => (dispatch => {
+    const newComment = { dishId, comment, rating };
     newComment.date = new Date().toISOString();
+    const bearer = 'Bearer ' + localStorage.getItem('token');
 
     fetch(baseUrl + 'comments', {
         method: "POST",
         body: JSON.stringify(newComment),
         headers: {
-            "Content-type": "application/json"
+            "Content-type": "application/json",
+            "Authorization": bearer
         },
         credentials: "same-origin"
     })
@@ -195,4 +197,53 @@ export const postFeedback = (values) => (dispatch => {
         alert(message);})
     .catch(error => {console.log('post feedback', error.message); 
     alert('Your feedback could not be posted\nError: '+error.message);});
-})
+});
+
+export const requestLogin = (creds) => ({
+    type: ActionTypes.REQUEST_LOGIN,
+    creds
+});
+
+export const loginSuccess = () => ({
+    type: ActionTypes.LOGIN_SUCCESS
+});
+
+export const loginFailure = (errMess) => ({
+    type: ActionTypes.LOGIN_ERR,
+    errMess
+});
+
+export const loginUser = (creds) => (dispatch) => {
+    dispatch(requestLogin(creds));
+    fetch(baseUrl + 'users/login', {
+        method: "POST",
+        body: JSON.stringify(creds),
+        headers: {
+            "Content-type": "application/json"
+        }
+    })
+    .then(response => {
+        if(response.ok) return response;
+        else {
+            var err = new Error('Error ' + response.status + ': ' + response.statusText);
+            err.response = response;
+            throw err;
+        }
+    }, err => {
+        throw err;
+    })
+    .then(response => response.json())
+    .then(response => {
+        if(response.success) {
+            localStorage.setItem('token', response.token);
+            localStorage.setItem('creds', JSON.stringify(creds));
+            //fetchFavorites();
+            dispatch(loginSuccess());
+        } else {
+            var error = new Error('Error ' + response.status);
+            error.response = response;
+            throw error;
+        }
+    })
+    .catch(err => dispatch(loginFailure(err.message)));
+}

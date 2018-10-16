@@ -25,9 +25,13 @@ export default class Header extends Component {
 
     handleLogin(event) {
         this.toggleModal();
-        const output = `Username: ${this.username.value} Password: ${this.password.value} Remember: ${this.remember.checked}`;
-        alert(output);
+        const creds = {username: this.username.value, password: this.password.value};
+        this.props.loginUser(creds);
         event.preventDefault();
+    }
+
+    handleLogout() {
+
     }
 
     render() {
@@ -58,7 +62,11 @@ export default class Header extends Component {
                             </Nav>
                             <Nav navbar className='ml-auto'>
                                 <NavItem>
-                                    <Button outline onClick={this.toggleModal} className="nav-link"><span className='fa fa-sign-in fa-lg'></span>Log in!</Button>
+                                    {!this.props.auth.isAuthenticated ? 
+                                     <Button outline onClick={this.toggleModal} className="nav-link"><span className='fa fa-sign-in fa-lg'></span>Log in!</Button>
+                                    : 
+                                    <Button outline onClick={this.handleLogout} className="nav-link"><span className='fa fa-sign-out fa-lg'></span>Log out!</Button>
+                                }
                                 </NavItem>
                             </Nav>
                         
