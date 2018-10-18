@@ -8,7 +8,9 @@ import About from './about';
 import Home from './home';
 import Contact from './contactus';
 import { connect } from 'react-redux';
-import { postComment, postFeedback, fetchDishes, fetchComments, fetchLeaders, fetchPromos, loginUser, logoutUser } from '../redux/ActionCreators';
+import { postComment, postFeedback, fetchDishes, fetchComments, fetchLeaders, fetchPromos, loginUser, logoutUser,
+        fetchFavorites, postFavorite, deleteFavorite
+} from '../redux/ActionCreators';
 import { actions } from 'react-redux-form';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
@@ -19,6 +21,7 @@ class Main extends Component {
         this.props.fetchComments();
         this.props.fetchPromos();
         this.props.fetchLeaders();
+        this.props.fetchFavorites();
     }
 
     render() {
@@ -39,12 +42,26 @@ class Main extends Component {
 
         const DishById = ({match}) => {
             return (
+                this.props.auth.isAuthenticated ? 
                 <DishDetail dish={this.props.dishes.dishes.filter((dish) => dish._id === match.params.id)[0]}
                 isLoading={this.props.dishes.isLoading}
                 errMess={this.props.dishes.errMess}
                 comments={this.props.comments.comments.filter((comment) => comment.dishId === match.params.id)}
                 commentsErrMess={this.props.comments.errMess}
-                addComment={this.props.postComment}/>
+                addComment={this.props.postComment}
+                favorite={this.props.favorites.favorites.dishes.some((dish) => dish._id === match.params.id)}
+                postFavorite={this.props.postFavorite}
+                deleteFavorite={this.props.deleteFavorite}/>
+                :
+                <DishDetail dish={this.props.dishes.dishes.filter((dish) => dish._id === match.params.id)[0]}
+                isLoading={this.props.dishes.isLoading}
+                errMess={this.props.dishes.errMess}
+                comments={this.props.comments.comments.filter((comment) => comment.dishId === match.params.id)}
+                commentsErrMess={this.props.comments.errMess}
+                addComment={this.props.postComment}
+                favorite={false}
+                postFavorite={this.props.postFavorite}
+                deleteFavorite={this.props.deleteFavorite}/>
             );
         }
 
@@ -70,8 +87,8 @@ class Main extends Component {
     };
 }
 
-function mapStateToProps({dishes, promotions, leaders, comments, auth}) {
-    return {dishes, promotions, leaders, comments, auth};
+function mapStateToProps({dishes, promotions, leaders, comments, auth, favorites}) {
+    return {dishes, promotions, leaders, comments, auth, favorites};
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -84,7 +101,10 @@ const mapDispatchToProps = (dispatch) => {
         fetchPromos: () => { dispatch(fetchPromos())},
         fetchLeaders: () => { dispatch(fetchLeaders())},
         loginUser: (creds) => {dispatch(loginUser(creds))},
-        logoutUser: () => {dispatch(logoutUser())}
+        logoutUser: () => {dispatch(logoutUser())},
+        postFavorite: (dishId) => { dispatch(postFavorite(dishId))},
+        deleteFavorite: (dishId) => { dispatch(deleteFavorite(dishId))},
+        fetchFavorites: () => { dispatch(fetchFavorites())}
     }
 }
 

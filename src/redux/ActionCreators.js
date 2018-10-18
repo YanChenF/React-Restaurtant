@@ -237,7 +237,7 @@ export const loginUser = (creds) => (dispatch) => {
         if(response.success) {
             localStorage.setItem('token', response.token);
             localStorage.setItem('creds', JSON.stringify(creds));
-            //fetchFavorites();
+            dispatch(fetchFavorites());
             dispatch(loginSuccess());
         } else {
             var error = new Error('Error ' + response.status);
@@ -260,5 +260,120 @@ export const logoutUser = () => (dispatch) => {
     dispatch(requestLogout());
     localStorage.removeItem('token');
     localStorage.removeItem('creds');
+    dispatch(favoritesFailed('401 Not Authorized'));
     dispatch(receiveLogout());
+}
+
+export const favoritesLoading = () => ({
+    type: ActionTypes.FAVORITES_LOADING
+});
+
+export const favoritesFailed = (errMess) => ({
+    type: ActionTypes.FAVORITES_ERR,
+    payload: errMess
+});
+
+export const addFavorites = (fav) => ({
+    type: ActionTypes.ADD_FAVORITE,
+    payload: fav
+});
+
+// export const fetchFavorites = () => (dispatch) => {
+//     dispatch(favoritesLoading(true));
+//     const bearer = 'Bearer ' + localStorage.getItem('token');
+//     return fetch(baseUrl + 'favorites', {
+//         headers: {
+//             'Authentication': bearer
+//         },
+//         credentials: "same-origin"
+//     })
+//     .then(response => {
+//         if(response.ok) return response;
+//         else {
+//             var err = new Error('Error ' + response.status + ': ' + response.statusText);
+//             err.response = response;
+//             throw err;
+//         }
+//     }, err => {
+//         throw err;
+//     })
+//     .then(response => response.json())
+//     .then(favorites => dispatch(addFavorites(favorites)))
+//     .catch(err => dispatch(favoritesFailed(err.message)));
+// };
+
+export const fetchFavorites = () => (dispatch) => {
+    dispatch(favoritesLoading(true));
+
+    const bearer = 'Bearer ' + localStorage.getItem('token');
+
+    return fetch(baseUrl + 'favorites', {
+        headers: {
+            'Authorization': bearer
+        },
+    })
+    .then(response => {
+        if (response.ok) {
+            return response;
+        }
+        else {
+            var error = new Error('Error ' + response.status + ': ' + response.statusText);
+            error.response = response;
+            throw error;
+        }
+    },
+    error => {
+        var errmess = new Error(error.message);
+        throw errmess;
+    })
+    .then(response => response.json())
+    .then(favorites => {console.log(favorites); dispatch(addFavorites(favorites))})
+    .catch(error => dispatch(favoritesFailed(error.message)));
+}
+
+export const postFavorite = (dishId) => (dispatch) => {
+    const bearer = 'Bearer ' + localStorage.getItem('token');
+    fetch(baseUrl + 'favorites', {
+        body: JSON.stringify({dish: dishId}),
+        method: "POST",
+        headers: {
+            'Content-Type': "application/json",
+            'Authorization': bearer           
+        },
+        credentials: "same-origin"
+    })
+    .then(response => {
+        if(response.ok) return response;
+        else {
+            var err = new Error('Error ' + response.status + response.statusCode);
+            err.response = response;
+            throw err;
+        }
+    }, err => {throw err;})
+    .then(response => response.json())
+    .then(favorites => dispatch(addFavorites(favorites)))
+    .catch(err => dispatch(favoritesFailed(err.message)));
+}
+
+export const deleteFavorite = (dishId) => (dispatch) => {
+    const bearer = 'Bearer ' + localStorage.getItem('token');
+    fetch(baseUrl + 'favorites/' + dishId, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': "application/json",
+            'Authorization': bearer               
+        },
+        credentials: "same-origin"
+    })
+    .then(response => {
+        if(response.ok) return response;
+        else {
+            var err = new Error('Error ' + response.status + response.statusCode);
+            err.response = response;
+            throw err;
+        }
+    }, err => {throw err;})
+    .then(response => response.json())
+    .then(favorites => dispatch(addFavorites(favorites)))
+    .catch(err => dispatch(favoritesFailed(err.message)));
 }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Card, CardImg, CardText, CardBody,
-    CardTitle, Breadcrumb, BreadcrumbItem, Button, Modal, ModalHeader, ModalBody, Row, Col, Label } from 'reactstrap';
+    CardTitle, Breadcrumb, BreadcrumbItem, Button, Modal, ModalHeader, ModalBody, Row, Col, Label, CardImgOverlay } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { LocalForm, Control, Errors } from 'react-redux-form';
 import { Loading } from './loading';
@@ -121,7 +121,7 @@ function RenderComments({comments, addComment, dishId, errMess}) {
         )
     }
 
-function RenderDish({dish}) {
+function RenderDish({dish, favorite, postFavorite, deleteFavorite}) {
         
         return (
             <FadeTransform
@@ -131,6 +131,15 @@ function RenderDish({dish}) {
             }}>
             <Card>
                 <CardImg top width='100%' src={baseUrl + dish.image} alt={dish.name} />
+                <CardImgOverlay>
+                    <Button outline onClick={() => favorite ? deleteFavorite(dish._id) : postFavorite(dish._id)}>
+                        {favorite? 
+                        <span className='fa fa-heart'></span>
+                        :
+                        <span className='fa fa-heart-o'></span>    
+                    }
+                    </Button>
+                </CardImgOverlay>
                 <CardBody>
                     <CardTitle>{dish.name}</CardTitle>
                     <CardText>{dish.description}</CardText>
@@ -140,7 +149,8 @@ function RenderDish({dish}) {
         );
     }
 
-const DishDetail = ({dish, comments, addComment, isLoading, errMess, commentsErrMess}) => {
+const DishDetail = ({dish, comments, addComment, isLoading, errMess, commentsErrMess,
+        favorite, postFavorite, deleteFavorite}) => {
     if(isLoading) {
         return (
         <div className='container'>
@@ -166,7 +176,7 @@ const DishDetail = ({dish, comments, addComment, isLoading, errMess, commentsErr
             </div>
             <div className='row'>
                 <div className='col-12 col-md-5 m-1'>
-                    <RenderDish dish={dish} />
+                    <RenderDish dish={dish} favorite={favorite} postFavorite={postFavorite} deleteFavorite={deleteFavorite} />
                 </div>
                 <RenderComments comments={comments} addComment={addComment} dishId={dish._id} errMess={commentsErrMess}/>
             </div>
