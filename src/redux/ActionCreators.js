@@ -334,7 +334,7 @@ export const fetchFavorites = () => (dispatch) => {
 export const postFavorite = (dishId) => (dispatch) => {
     const bearer = 'Bearer ' + localStorage.getItem('token');
     fetch(baseUrl + 'favorites', {
-        body: JSON.stringify({dish: dishId}),
+        body: JSON.stringify({_id: dishId}),
         method: "POST",
         headers: {
             'Content-Type': "application/json",
