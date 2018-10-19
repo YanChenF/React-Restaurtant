@@ -7,6 +7,7 @@ import DishDetail from './dishdetail';
 import About from './about';
 import Home from './home';
 import Contact from './contactus';
+import Favorites from './favorites';
 import { connect } from 'react-redux';
 import { postComment, postFeedback, fetchDishes, fetchComments, fetchLeaders, fetchPromos, loginUser, logoutUser,
         fetchFavorites, postFavorite, deleteFavorite
@@ -65,6 +66,18 @@ class Main extends Component {
             );
         }
 
+        const PrivateRoute = ({component: Component, ...rest}) => (
+            <Route {...rest} render={(props) => (
+                    this.props.auth.isAuthenticated ? 
+                    <Component {...props}/>
+                    : 
+                    <Redirect to={{
+                        pathname: '/home',
+                        state: { from: props.location }
+                    }}/> 
+                )}/>
+            )
+
         return (<div>
             <Header loginUser={this.props.loginUser} auth={this.props.auth} logoutUser={this.props.logoutUser}/>
             <TransitionGroup>
@@ -76,6 +89,7 @@ class Main extends Component {
                         addFeedback={this.props.postFeedback}/>} />
                         <Route path='/menu/:id' component={DishById} />
                         <Route path='/about' component={() => <About leaders={this.props.leaders} />} />
+                        <PrivateRoute exact path='/favorites' component={() => <Favorites favorites={this.props.favorites} deleteFavorite={this.props.deleteFavorite}/>} />
                         <Redirect to="/home" />
                     </Switch>
                 </CSSTransition>

@@ -60,6 +60,12 @@ export default class Header extends Component {
                                     <NavLink to="/contact" className="nav-link"><span className="fa fa-address-card fa-lg"> Contact</span>
                                     </NavLink>
                                 </NavItem>
+                                {this.props.auth.isAuthenticated ? 
+                                <NavItem>
+                                    <NavLink to="/favorites" className="nav-link"><span className="fa fa-heart fa-lg"> My Favorites</span>
+                                    </NavLink>
+                                </NavItem> : null                                      
+                            }
                             </Nav>
                             <Nav navbar className='ml-auto'>
                                 <NavItem>
